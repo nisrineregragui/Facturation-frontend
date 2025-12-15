@@ -4,7 +4,8 @@ import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Techniciens from './pages/Techniciens';
-import Appareils from './pages/Appareils';
+import Magasins from './pages/Magasins';
+import Modeles from './pages/Modeles';
 import Facturation from './pages/Facturation';
 import './App.css';
 
@@ -16,7 +17,8 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="clients" element={<Clients />} />
           <Route path="techniciens" element={<Techniciens />} />
-          <Route path="appareils" element={<Appareils />} />
+          <Route path="magasins" element={<Magasins />} />
+          <Route path="modeles" element={<Modeles />} />
           <Route path="factures" element={<Facturation />} />
         </Route>
       </Routes>

@@ -7,6 +7,7 @@ import {
     FileText,
     Settings,
     LogOut,
+    ShoppingBag,
     Smartphone
 } from 'lucide-react';
 import './Sidebar.css';
@@ -16,7 +17,8 @@ const Sidebar = () => {
         { path: '/', name: 'Dashboard', icon: <LayoutDashboard size={20} /> },
         { path: '/clients', name: 'Clients', icon: <Users size={20} /> },
         { path: '/techniciens', name: 'Techniciens', icon: <Wrench size={20} /> },
-        { path: '/appareils', name: 'Appareils', icon: <Smartphone size={20} /> },
+        { path: '/magasins', name: 'Magasins', icon: <ShoppingBag size={20} /> },
+        { path: '/modeles', name: 'Modèles', icon: <Smartphone size={20} /> },
         { path: '/factures', name: 'Facturation', icon: <FileText size={20} /> },
     ];
 

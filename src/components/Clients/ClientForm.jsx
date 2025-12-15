@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import magasinService from '../../services/magasinService';
 import './ClientForm.css';
 
 const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
@@ -10,9 +11,23 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
         numTelephone: '',
         email: '',
         adresse: '',
-        ville: ''
+        ville: '',
+        magasinPartenaireID: null
     });
     const [errors, setErrors] = useState({});
+    const [magasins, setMagasins] = useState([]);
+
+    useEffect(() => {
+        const fetchMagasins = async () => {
+            try {
+                const data = await magasinService.getAll();
+                setMagasins(data);
+            } catch (error) {
+                console.error("Error fetching magasins:", error);
+            }
+        };
+        fetchMagasins();
+    }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -25,7 +40,8 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                 numTelephone: '',
                 email: '',
                 adresse: '',
-                ville: ''
+                ville: '',
+                magasinPartenaireID: null
             });
         }
     }, [initialData, isOpen]);
@@ -50,6 +66,28 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleMagasinChange = (e) => {
+        const selectedId = e.target.value;
+        if (!selectedId) {
+            setFormData(prev => ({
+                ...prev,
+                magasinPartenaireID: null,
+                nomContact: ''
+            }));
+            return;
+        }
+
+        const selectedMagasin = magasins.find(m => m.magasinID === selectedId);
+        if (selectedMagasin) {
+            setFormData(prev => ({
+                ...prev,
+                magasinPartenaireID: selectedId,
+                nomContact: selectedMagasin.nomMagasin,
+                ville: selectedMagasin.ville || prev.ville
+            }));
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -66,23 +104,48 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                         <select
                             name="typeClient"
                             value={formData.typeClient}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                                handleChange(e);
+                                if (e.target.value !== 'magasin') {
+                                    setFormData(prev => ({ ...prev, magasinPartenaireID: null, nomContact: '' }));
+                                }
+                            }}
                             className="form-input"
                         >
                             <option value="particulier">Particulier</option>
-                            <option value="magasin">Magasin</option>
+                            <option value="magasin">Magasin Partenaire</option>
                         </select>
                     </div>
 
+                    {formData.typeClient === 'magasin' && (
+                        <div className="form-group">
+                            <label>Sélectionnez le Magasin</label>
+                            <select
+                                name="magasinPartenaireID"
+                                value={formData.magasinPartenaireID || ''}
+                                onChange={handleMagasinChange}
+                                className="form-input"
+                            >
+                                <option value="">-- Choisir un magasin --</option>
+                                {magasins.map(m => (
+                                    <option key={m.magasinID} value={m.magasinID}>
+                                        {m.nomMagasin} - {m.ville}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="form-group">
-                            <label>Nom {formData.typeClient === 'magasin' ? '(Magasin)' : '(Contact)'}</label>
+                            <label>Nom {formData.typeClient === 'magasin' ? '(Auto-rempli)' : '(Contact)'}</label>
                             <input
                                 name="nomContact"
                                 value={formData.nomContact}
                                 onChange={handleChange}
                                 className="form-input"
                                 placeholder={formData.typeClient === 'magasin' ? 'Nom du magasin' : 'Nom'}
+                                readOnly={formData.typeClient === 'magasin'}
                             />
                             {errors.nomContact && <p className="error-msg">{errors.nomContact}</p>}
                         </div>
