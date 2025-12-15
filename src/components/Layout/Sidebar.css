@@ -1,0 +1,87 @@
+/* Sidebar.css */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: #1e1e2f;
+    /* Deep dark blue-gray */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease;
+    position: sticky;
+    top: 0;
+}
+
+.sidebar-header {
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #3a86ff, #8338ec);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    color: #a0a0ba;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    overflow: hidden;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    transform: translateX(5px);
+}
+
+.nav-link.active {
+    background: linear-gradient(90deg, rgba(58, 134, 255, 0.15) 0%, rgba(58, 134, 255, 0) 100%);
+    color: #3a86ff;
+    border-left: 3px solid #3a86ff;
+}
+
+.nav-link svg {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover svg {
+    transform: scale(1.1);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+}

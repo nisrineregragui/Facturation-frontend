@@ -1,0 +1,25 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout/Layout';
+import Dashboard from './pages/Dashboard';
+import Clients from './pages/Clients';
+import Techniciens from './pages/Techniciens';
+import Facturation from './pages/Facturation';
+import './App.css';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="techniciens" element={<Techniciens />} />
+          <Route path="factures" element={<Facturation />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;

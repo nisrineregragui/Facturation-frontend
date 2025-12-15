@@ -1,0 +1,11 @@
+/* App.css */
+/* Removed default #root max-width and paddings to allow full screen layout */
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  /* Keep utility classes if helpful, but remove global centering */
+}
