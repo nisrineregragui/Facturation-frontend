@@ -30,11 +30,14 @@ const ClientTable = ({
 
     const handleContextMenu = (e, client) => {
         e.preventDefault();
-        setContextMenu({
-            x: e.pageX,
-            y: e.pageY,
-            client
-        });
+        let x = e.clientX;
+        let y = e.clientY;
+
+        if (y + 100 > window.innerHeight) {
+            y -= 100;
+        }
+
+        setContextMenu({ x, y, client });
     };
 
     // Sorting

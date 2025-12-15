@@ -28,11 +28,16 @@ const InterventionTable = ({
 
     const handleContextMenu = (e, item) => {
         e.preventDefault();
-        setContextMenu({
-            x: e.pageX,
-            y: e.pageY,
-            item
-        });
+        // Use client coordinates for fixed positioning
+        let x = e.clientX;
+        let y = e.clientY;
+
+        // Simple boundary check (assuming menu height ~100px)
+        if (y + 100 > window.innerHeight) {
+            y -= 100; // Open upwards
+        }
+
+        setContextMenu({ x, y, item });
     };
 
     const sortedData = React.useMemo(() => {
