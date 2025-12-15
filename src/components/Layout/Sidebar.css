@@ -2,8 +2,7 @@
 .sidebar {
     width: 260px;
     height: 100vh;
-    background: #1e1e2f;
-    /* Deep dark blue-gray */
+    background: var(--primary-dark);
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -25,9 +24,8 @@
 .brand-name {
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(45deg, #3a86ff, #8338ec);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #fff;
+    /* White brand name on dark bg */
     letter-spacing: 0.5px;
 }
 
@@ -50,23 +48,25 @@
     gap: 1rem;
     padding: 0.8rem 1rem;
     border-radius: 12px;
-    color: #a0a0ba;
+    color: #94a3b8;
+    /* Muted text */
     text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
     overflow: hidden;
 }
 
 .nav-link:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--secondary-dark);
     color: #fff;
     transform: translateX(5px);
 }
 
 .nav-link.active {
-    background: linear-gradient(90deg, rgba(58, 134, 255, 0.15) 0%, rgba(58, 134, 255, 0) 100%);
-    color: #3a86ff;
-    border-left: 3px solid #3a86ff;
+    background: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    /* Glow effect */
 }
 
 .nav-link svg {
