@@ -15,28 +15,10 @@ const create = async (data) => {
     return response.data;
 };
 
-const update = async (id, data) => {
-    const response = await api.put(`/Appareil/${id}`, data);
-    return response.data;
-};
-
-const remove = async (id) => {
-    const response = await api.delete(`/Appareil/${id}`);
-    return response.data;
-};
-
-const removeBulk = async (ids) => {
-    const promises = ids.map(id => api.delete(`/Appareil/${id}`));
-    await Promise.all(promises);
-};
-
 const appareilService = {
     getAll,
     getById,
-    create,
-    update,
-    remove,
-    removeBulk
+    create
 };
 
 export default appareilService;

@@ -6,6 +6,7 @@ import Clients from './pages/Clients';
 import Techniciens from './pages/Techniciens';
 import Magasins from './pages/Magasins';
 import Modeles from './pages/Modeles';
+import Interventions from './pages/Interventions';
 import Facturation from './pages/Facturation';
 import './App.css';
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="techniciens" element={<Techniciens />} />
           <Route path="magasins" element={<Magasins />} />
           <Route path="modeles" element={<Modeles />} />
+          <Route path="interventions" element={<Interventions />} />
           <Route path="factures" element={<Facturation />} />
         </Route>
       </Routes>

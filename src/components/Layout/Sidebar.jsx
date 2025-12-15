@@ -8,7 +8,8 @@ import {
     Settings,
     LogOut,
     ShoppingBag,
-    Smartphone
+    Smartphone,
+    ClipboardList
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -19,6 +20,7 @@ const Sidebar = () => {
         { path: '/techniciens', name: 'Techniciens', icon: <Wrench size={20} /> },
         { path: '/magasins', name: 'Magasins', icon: <ShoppingBag size={20} /> },
         { path: '/modeles', name: 'Modèles', icon: <Smartphone size={20} /> },
+        { path: '/interventions', name: 'Interventions', icon: <ClipboardList size={20} /> },
         { path: '/factures', name: 'Facturation', icon: <FileText size={20} /> },
     ];
 
