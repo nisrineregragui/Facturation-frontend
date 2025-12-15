@@ -92,6 +92,9 @@ const InterventionTable = ({
                             />
                         </th>
                         <th onClick={() => requestSort('nomClient')}>Client {sortConfig.key === 'nomClient' && (sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}</th>
+                        <th onClick={() => requestSort('clientTelephone')}>Tél Client</th>
+                        <th onClick={() => requestSort('clientAdresse')}>Adresse</th>
+                        <th onClick={() => requestSort('clientVille')}>Ville</th>
                         <th onClick={() => requestSort('nomAppareil')}>Appareil</th>
                         <th onClick={() => requestSort('nomMagasin')}>Magasin</th>
                         <th onClick={() => requestSort('nomTechnicien')}>Technicien</th>
@@ -101,6 +104,7 @@ const InterventionTable = ({
                         <th onClick={() => requestSort('panneReclamee')}>Panne Réclamée</th>
                         <th onClick={() => requestSort('panneConstatee')}>Panne Constatée</th>
                         <th onClick={() => requestSort('travailEffectue')}>Travail Effectué</th>
+                        <th onClick={() => requestSort('notes')}>Notes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,6 +123,9 @@ const InterventionTable = ({
                                     />
                                 </td>
                                 <td>{item.nomClient}</td>
+                                <td>{item.clientTelephone || '-'}</td>
+                                <td>{item.clientAdresse || '-'}</td>
+                                <td>{item.clientVille || '-'}</td>
                                 <td>{item.nomAppareil}</td>
                                 <td>{item.nomMagasin || '-'}</td>
                                 <td>{item.nomTechnicien}</td>
@@ -132,11 +139,12 @@ const InterventionTable = ({
                                 <td title={item.panneReclamee}>{item.panneReclamee?.length > 20 ? item.panneReclamee.substring(0, 20) + '...' : item.panneReclamee}</td>
                                 <td title={item.panneConstatee}>{item.panneConstatee?.length > 20 ? item.panneConstatee.substring(0, 20) + '...' : (item.panneConstatee || '-')}</td>
                                 <td title={item.travailEffectue}>{item.travailEffectue?.length > 20 ? item.travailEffectue.substring(0, 20) + '...' : (item.travailEffectue || '-')}</td>
+                                <td title={item.notes}>{item.notes?.length > 20 ? item.notes.substring(0, 20) + '...' : (item.notes || '-')}</td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="11" style={{ textAlign: 'center', padding: '2rem' }}>
+                            <td colSpan="15" style={{ textAlign: 'center', padding: '2rem' }}>
                                 Aucune intervention trouvée.
                             </td>
                         </tr>

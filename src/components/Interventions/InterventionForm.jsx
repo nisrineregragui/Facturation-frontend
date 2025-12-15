@@ -35,7 +35,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
       panneReclamee: '',
       panneConstatee: '',
       travailEffectue: '',
-      statut: 'Planifiée'
+      statut: 'Planifiée',
+      bonReparation: '',
+      notes: ''
     }
   });
 
@@ -95,14 +97,16 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
           panneReclamee: initialData.panneReclamee || '',
           panneConstatee: initialData.panneConstatee || '',
           travailEffectue: initialData.travailEffectue || '',
-          statut: initialData.statut || 'Planifiée'
+          statut: initialData.statut || 'Planifiée',
+          bonReparation: initialData.bonReparation || '',
+          notes: initialData.notes || ''
         }
       });
     } else {
       setFormData({
         client: { typeClient: 'particulier', nomContact: '', prenomContact: '', numTelephone: '', email: '', adresse: '', ville: '' },
         appareil: { modeleID: '', numeroSerie: '', dateAchat: '', finGarantie: '' },
-        intervention: { technicienID: '', magasinID: '', dateDebut: new Date().toISOString().split('T')[0], panneReclamee: '', panneConstatee: '', travailEffectue: '', statut: 'Planifiée' }
+        intervention: { technicienID: '', magasinID: '', dateDebut: new Date().toISOString().split('T')[0], panneReclamee: '', panneConstatee: '', travailEffectue: '', statut: 'Planifiée', bonReparation: '', notes: '' }
       });
     }
   }, [initialData, isOpen]);
@@ -139,7 +143,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
           panneReclamee: formData.intervention.panneReclamee,
           panneConstatee: formData.intervention.panneConstatee,
           travailEffectue: formData.intervention.travailEffectue,
-          statut: formData.intervention.statut
+          statut: formData.intervention.statut,
+          bonReparation: formData.intervention.bonReparation,
+          notes: formData.intervention.notes
         };
         await onSubmit(interventionPayload);
 
@@ -173,7 +179,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
           panneReclamee: formData.intervention.panneReclamee,
           panneConstatee: formData.intervention.panneConstatee,
           travailEffectue: formData.intervention.travailEffectue,
-          statut: formData.intervention.statut
+          statut: formData.intervention.statut,
+          bonReparation: formData.intervention.bonReparation,
+          notes: formData.intervention.notes
         };
 
         onSubmit(interventionPayload);
@@ -306,6 +314,14 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                 <label>Date Début</label>
                 <input type="date" name="dateDebut" value={formData.intervention.dateDebut} onChange={handleInterventionChange} className="form-input" required />
               </div>
+              <div className="form-group">
+                <label>Bon de Réparation</label>
+                <input name="bonReparation" value={formData.intervention.bonReparation} onChange={handleInterventionChange} className="form-input" placeholder="N° Bon..." />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Notes d'Intervention</label>
+              <textarea name="notes" value={formData.intervention.notes} onChange={handleInterventionChange} className="form-input" rows="2" placeholder="Notes internes..." />
             </div>
             <div className="form-group">
               <label>Panne Réclamée</label>

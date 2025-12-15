@@ -5,9 +5,11 @@ import Header from './Header';
 import './Layout.css';
 
 const Layout = () => {
+    const [collapsed, setCollapsed] = React.useState(false);
+
     return (
         <div className="app-layout">
-            <Sidebar />
+            <Sidebar collapsed={collapsed} toggle={() => setCollapsed(!collapsed)} />
             <div className="main-content">
                 <Header />
                 <main className="page-container">

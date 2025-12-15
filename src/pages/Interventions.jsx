@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Search } from 'lucide-react';
 import interventionService from '../services/interventionService';
+import technicienService from '../services/technicienService';
 import InterventionTable from '../components/Interventions/InterventionTable';
 import InterventionForm from '../components/Interventions/InterventionForm';
 import './Clients.css'; // Reuse common page styles
@@ -31,14 +32,27 @@ const Interventions = () => {
 
     const [filterMagasin, setFilterMagasin] = useState('');
     const [filterStatut, setFilterStatut] = useState('');
+    const [filterVille, setFilterVille] = useState('');
+    const [filterTechnicien, setFilterTechnicien] = useState('');
     const [magasins, setMagasins] = useState([]);
+    const [techniciens, setTechniciens] = useState([]);
+    const [villes, setVilles] = useState([]);
 
     useEffect(() => {
         import('../services/magasinService').then(module => {
             module.default.getAll().then(setMagasins);
         });
+        technicienService.getAll().then(setTechniciens);
         fetchInterventions();
     }, []);
+
+    // Extract Villes on interventions change
+    useEffect(() => {
+        if (interventions.length > 0) {
+            const uniqueVilles = [...new Set(interventions.map(i => i.clientVille).filter(v => v))].sort();
+            setVilles(uniqueVilles);
+        }
+    }, [interventions]);
 
     // Filter
     useEffect(() => {
@@ -61,8 +75,16 @@ const Interventions = () => {
             filtered = filtered.filter(i => i.statut === filterStatut);
         }
 
+        if (filterVille) {
+            filtered = filtered.filter(i => i.clientVille === filterVille);
+        }
+
+        if (filterTechnicien) {
+            filtered = filtered.filter(i => i.technicienID === filterTechnicien);
+        }
+
         setFilteredInterventions(filtered);
-    }, [search, filterMagasin, filterStatut, interventions]);
+    }, [search, filterMagasin, filterStatut, filterVille, filterTechnicien, interventions]);
 
     // CRUD
     const handleCreate = async (formData) => {
@@ -166,6 +188,30 @@ const Interventions = () => {
                         <option value="En Cours">En Cours</option>
                         <option value="Terminée">Terminée</option>
                         <option value="Annulée">Annulée</option>
+                    </select>
+
+                    <select
+                        className="filter-select"
+                        value={filterVille}
+                        onChange={(e) => setFilterVille(e.target.value)}
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}
+                    >
+                        <option value="">Toutes les Villes</option>
+                        {villes.map(v => (
+                            <option key={v} value={v}>{v}</option>
+                        ))}
+                    </select>
+
+                    <select
+                        className="filter-select"
+                        value={filterTechnicien}
+                        onChange={(e) => setFilterTechnicien(e.target.value)}
+                        style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}
+                    >
+                        <option value="">Tous les Techniciens</option>
+                        {techniciens.map(t => (
+                            <option key={t.technicienID} value={t.technicienID}>{t.nom} {t.prenom}</option>
+                        ))}
                     </select>
                 </div>
 
