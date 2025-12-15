@@ -82,7 +82,6 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
             setFormData(prev => ({
                 ...prev,
                 magasinPartenaireID: selectedId,
-                nomContact: selectedMagasin.nomMagasin,
                 ville: selectedMagasin.ville || prev.ville
             }));
         }
@@ -138,14 +137,13 @@ const ClientForm = ({ isOpen, onClose, onSubmit, initialData }) => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div className="form-group">
-                            <label>Nom {formData.typeClient === 'magasin' ? '(Auto-rempli)' : '(Contact)'}</label>
+                            <label>Nom {formData.typeClient === 'magasin' ? '(Client/Magasin)' : '(Contact)'}</label>
                             <input
                                 name="nomContact"
                                 value={formData.nomContact}
                                 onChange={handleChange}
                                 className="form-input"
-                                placeholder={formData.typeClient === 'magasin' ? 'Nom du magasin' : 'Nom'}
-                                readOnly={formData.typeClient === 'magasin'}
+                                placeholder="Nom"
                             />
                             {errors.nomContact && <p className="error-msg">{errors.nomContact}</p>}
                         </div>
