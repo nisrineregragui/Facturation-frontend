@@ -12,6 +12,7 @@ import Modeles from './pages/Modeles';
 import Interventions from './pages/Interventions';
 import Facturation from './pages/Facturation';
 import Produits from './pages/Produits';
+import Settings from './pages/Settings';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
               <Route path="interventions" element={<Interventions />} />
               <Route path="produits" element={<Produits />} />
               <Route path="factures" element={<Facturation />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           </Route>
         </Routes>

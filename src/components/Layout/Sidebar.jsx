@@ -62,10 +62,10 @@ const Sidebar = ({ collapsed, toggle }) => {
             </nav>
 
             <div className="sidebar-footer">
-                <div className="nav-link" style={{ cursor: 'pointer', marginTop: '10px' }}>
+                <NavLink to="/settings" className="nav-link" style={{ cursor: 'pointer', marginTop: '10px', textDecoration: 'none', color: 'inherit' }}>
                     <Settings size={20} />
                     {!collapsed && <span>Settings</span>}
-                </div>
+                </NavLink>
                 <div className="nav-link" style={{ cursor: 'pointer' }} onClick={logout}>
                     <LogOut size={20} />
                     {!collapsed && <span>Logout</span>}
