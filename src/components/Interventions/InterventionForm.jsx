@@ -411,7 +411,6 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
               <option value="En Cours">En Cours</option>
               <option value="Terminée">Terminée</option>
               <option value="Annulée">Annulée</option>
-              <option value="À Facturer">À Facturer</option>
             </select>
           </div>
 

@@ -13,16 +13,16 @@ const authService = {
     },
 
     getCurrentUser: () => {
-        return JSON.parse(localStorage.getItem('user'));
+        return JSON.parse(sessionStorage.getItem('user'));
     },
 
     getToken: () => {
-        return localStorage.getItem('token');
+        return sessionStorage.getItem('token');
     },
 
     logout: () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('token');
     }
 };
 

@@ -17,13 +17,41 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    // Auto Logout Logic
+    useEffect(() => {
+        let timeout;
+
+        const resetTimer = () => {
+            if (timeout) clearTimeout(timeout);
+            if (user) {
+                // 1 Hour = 3600000 ms
+                timeout = setTimeout(() => {
+                    console.log("Auto-logout due to inactivity");
+                    logout();
+                }, 3600000);
+            }
+        };
+
+        const events = ['mousemove', 'keydown', 'click', 'scroll'];
+
+        if (user) {
+            resetTimer(); // Start timer on login/mount
+            events.forEach(event => window.addEventListener(event, resetTimer));
+        }
+
+        return () => {
+            if (timeout) clearTimeout(timeout);
+            events.forEach(event => window.removeEventListener(event, resetTimer));
+        };
+    }, [user]); // Re-run when user Logs in/out
+
     const login = async (nomUtilisateur, motDePasse) => {
         try {
             const data = await authService.login({ nomUtilisateur, motDePasse });
             // Expecting { token, user }
             if (data.token && data.user) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('user', JSON.stringify(data.user));
                 setUser(data.user);
                 return true;
             }

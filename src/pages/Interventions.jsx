@@ -187,6 +187,7 @@ const Interventions = () => {
                         <option value="Planifiée">Planifiée</option>
                         <option value="En Cours">En Cours</option>
                         <option value="Terminée">Terminée</option>
+                        <option value="Facturée">Facturée</option>
                         <option value="Annulée">Annulée</option>
                     </select>
 
