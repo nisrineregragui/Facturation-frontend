@@ -9,6 +9,7 @@ import {
     LogOut,
     ShoppingBag,
     Smartphone,
+    Package,
 
     ClipboardList,
     ChevronLeft,
@@ -25,6 +26,7 @@ const Sidebar = ({ collapsed, toggle }) => {
         { path: '/techniciens', name: 'Techniciens', icon: <Wrench size={20} /> },
         { path: '/magasins', name: 'Magasins', icon: <ShoppingBag size={20} /> },
         { path: '/modeles', name: 'Modèles', icon: <Smartphone size={20} /> },
+        { path: '/produits', name: 'Catalogue', icon: <Package size={20} /> },
         { path: '/interventions', name: 'Interventions', icon: <ClipboardList size={20} /> },
         { path: '/factures', name: 'Facturation', icon: <FileText size={20} /> },
     ];

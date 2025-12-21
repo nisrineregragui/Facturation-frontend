@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Edit2, Trash2, Printer } from 'lucide-react';
-import PdfPreviewModal from './PdfPreviewModal'; // Import Modal
+import { ChevronDown, ChevronUp, Edit2, Trash2 } from 'lucide-react';
 import '../Clients/ClientTable.css'; // Reuse styles
 
-const InterventionTable = ({
+const ProduitTable = ({
     data,
     onEdit,
     onDelete,
@@ -15,7 +14,6 @@ const InterventionTable = ({
     const [itemsPerPage] = useState(10);
     const [selectedIds, setSelectedIds] = useState([]);
     const [contextMenu, setContextMenu] = useState(null);
-    const [previewIntervention, setPreviewIntervention] = useState(null); // State for modal
 
     useEffect(() => {
         setSelectedIds([]);
@@ -30,16 +28,11 @@ const InterventionTable = ({
 
     const handleContextMenu = (e, item) => {
         e.preventDefault();
-        // Use client coordinates for fixed positioning
-        let x = e.clientX;
-        let y = e.clientY;
-
-        // Simple boundary check (assuming menu height ~100px)
-        if (y + 100 > window.innerHeight) {
-            y -= 100; // Open upwards
-        }
-
-        setContextMenu({ x, y, item });
+        setContextMenu({
+            x: e.pageX,
+            y: e.pageY,
+            item
+        });
     };
 
     const sortedData = React.useMemo(() => {
@@ -67,7 +60,7 @@ const InterventionTable = ({
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
-            const ids = currentItems.map(item => item.interventionID);
+            const ids = currentItems.map(item => item.produitServiceID);
             setSelectedIds(ids);
             onSelectionChange(ids);
         } else {
@@ -87,7 +80,7 @@ const InterventionTable = ({
     if (loading) return <div className="p-4 text-center">Chargement...</div>;
 
     return (
-        <div className="table-container" style={{ overflowX: 'auto' }}>
+        <div className="table-container">
             <table className="data-table">
                 <thead>
                     <tr>
@@ -98,63 +91,43 @@ const InterventionTable = ({
                                 checked={selectedIds.length > 0 && selectedIds.length === currentItems.length}
                             />
                         </th>
-                        <th onClick={() => requestSort('nomClient')}>Client {sortConfig.key === 'nomClient' && (sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}</th>
-                        <th onClick={() => requestSort('clientTelephone')}>Tél Client</th>
-                        <th onClick={() => requestSort('clientAdresse')}>Adresse</th>
-                        <th onClick={() => requestSort('clientVille')}>Ville</th>
-                        <th onClick={() => requestSort('nomAppareil')}>Appareil</th>
-                        <th onClick={() => requestSort('somme')}>Total (DH)</th>
-                        <th onClick={() => requestSort('nomMagasin')}>Magasin</th>
-                        <th onClick={() => requestSort('nomTechnicien')}>Technicien</th>
-                        <th onClick={() => requestSort('statut')}>Statut</th>
-                        <th onClick={() => requestSort('dateDebut')}>Date Début</th>
-                        <th onClick={() => requestSort('dateFin')}>Date Fin</th>
-                        <th onClick={() => requestSort('panneReclamee')}>Panne Réclamée</th>
-                        <th onClick={() => requestSort('panneConstatee')}>Panne Constatée</th>
-                        <th onClick={() => requestSort('travailEffectue')}>Travail Effectué</th>
-                        <th onClick={() => requestSort('notes')}>Notes</th>
+                        <th onClick={() => requestSort('nom')}>Nom {sortConfig.key === 'nom' && (sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}</th>
+                        <th onClick={() => requestSort('reference')}>Référence</th>
+                        <th onClick={() => requestSort('typeArticle')}>Type</th>
+                        <th onClick={() => requestSort('prixUnitaireHT')}>Prix HT</th>
+                        <th onClick={() => requestSort('tauxTVA')}>TVA</th>
                     </tr>
                 </thead>
                 <tbody>
                     {currentItems.length > 0 ? (
                         currentItems.map((item) => (
                             <tr
-                                key={item.interventionID}
-                                className={selectedIds.includes(item.interventionID) ? 'selected' : ''}
+                                key={item.produitServiceID}
+                                className={selectedIds.includes(item.produitServiceID) ? 'selected' : ''}
                                 onContextMenu={(e) => handleContextMenu(e, item)}
                             >
                                 <td>
                                     <input
                                         type="checkbox"
-                                        checked={selectedIds.includes(item.interventionID)}
-                                        onChange={() => handleSelectOne(item.interventionID)}
+                                        checked={selectedIds.includes(item.produitServiceID)}
+                                        onChange={() => handleSelectOne(item.produitServiceID)}
                                     />
                                 </td>
-                                <td>{item.nomClient}</td>
-                                <td>{item.clientTelephone || '-'}</td>
-                                <td>{item.clientAdresse || '-'}</td>
-                                <td>{item.clientVille || '-'}</td>
-                                <td>{item.nomAppareil}</td>
-                                <td style={{ fontWeight: 'bold', color: '#10b981' }}>{item.somme?.toFixed(2) || '0.00'} DH</td>
-                                <td>{item.nomMagasin || '-'}</td>
-                                <td>{item.nomTechnicien}</td>
+                                <td>{item.nom}</td>
+                                <td>{item.reference || '-'}</td>
                                 <td>
-                                    <span className={`status-badge status-${item.statut?.toLowerCase().replace(' ', '') || 'default'}`}>
-                                        {item.statut}
+                                    <span className={`status-badge status-${item.typeArticle.toLowerCase()}`}>
+                                        {item.typeArticle}
                                     </span>
                                 </td>
-                                <td>{new Date(item.dateDebut).toLocaleDateString()}</td>
-                                <td>{item.dateFin ? new Date(item.dateFin).toLocaleDateString() : '-'}</td>
-                                <td title={item.panneReclamee}>{item.panneReclamee?.length > 20 ? item.panneReclamee.substring(0, 20) + '...' : item.panneReclamee}</td>
-                                <td title={item.panneConstatee}>{item.panneConstatee?.length > 20 ? item.panneConstatee.substring(0, 20) + '...' : (item.panneConstatee || '-')}</td>
-                                <td title={item.travailEffectue}>{item.travailEffectue?.length > 20 ? item.travailEffectue.substring(0, 20) + '...' : (item.travailEffectue || '-')}</td>
-                                <td title={item.notes}>{item.notes?.length > 20 ? item.notes.substring(0, 20) + '...' : (item.notes || '-')}</td>
+                                <td>{item.prixUnitaireHT.toFixed(2)} DH</td>
+                                <td>{item.tauxTVA}%</td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="15" style={{ textAlign: 'center', padding: '2rem' }}>
-                                Aucune intervention trouvée.
+                            <td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>
+                                Aucun article trouvé.
                             </td>
                         </tr>
                     )}
@@ -198,22 +171,13 @@ const InterventionTable = ({
                     <div className="context-menu-item" onClick={() => { onEdit(contextMenu.item); setContextMenu(null); }}>
                         <Edit2 size={16} /> Modifier
                     </div>
-                    <div className="context-menu-item" onClick={() => { setPreviewIntervention(contextMenu.item); setContextMenu(null); }}>
-                        <Printer size={16} /> Imprimer Fiche
-                    </div>
-                    <div className="context-menu-item delete" onClick={() => { onDelete(contextMenu.item.interventionID); setContextMenu(null); }}>
+                    <div className="context-menu-item delete" onClick={() => { onDelete(contextMenu.item.produitServiceID); setContextMenu(null); }}>
                         <Trash2 size={16} /> Supprimer
                     </div>
                 </div>
-            )}
-            {previewIntervention && (
-                <PdfPreviewModal
-                    intervention={previewIntervention}
-                    onClose={() => setPreviewIntervention(null)}
-                />
             )}
         </div>
     );
 };
 
-export default InterventionTable;
+export default ProduitTable;

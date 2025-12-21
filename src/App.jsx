@@ -11,6 +11,7 @@ import Magasins from './pages/Magasins';
 import Modeles from './pages/Modeles';
 import Interventions from './pages/Interventions';
 import Facturation from './pages/Facturation';
+import Produits from './pages/Produits';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
               <Route path="magasins" element={<Magasins />} />
               <Route path="modeles" element={<Modeles />} />
               <Route path="interventions" element={<Interventions />} />
+              <Route path="produits" element={<Produits />} />
               <Route path="factures" element={<Facturation />} />
             </Route>
           </Route>

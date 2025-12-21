@@ -114,7 +114,7 @@ const TechnicienTable = ({
                                 </td>
                                 <td>{tech.nom}</td>
                                 <td>{tech.prenom}</td>
-                                <td>{tech.cIN}</td> {/* Note: DTO casing might vary, assuming 'cIN' or 'CIN' based on json response. DTO says 'CIN', but json usually camelCase. */}
+                                <td>{tech.cIN}</td>
                                 <td>{tech.specialite}</td>
                             </tr>
                         ))

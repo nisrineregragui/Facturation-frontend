@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, FileText } from 'lucide-react';
 import clientService from '../../services/clientService';
 import technicienService from '../../services/technicienService';
 import appareilService from '../../services/appareilService';
 import modeleService from '../../services/modeleService';
 import magasinService from '../../services/magasinService';
+import interventionService from '../../services/interventionService'; // Add this
+import factureService from '../../services/factureService'; // Add this
+import produitService from '../../services/produitService'; // Add this
+import InterventionPieces from './InterventionPieces'; // Add this
 import '../Clients/ClientForm.css'; // Reuse styles
 
 const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
@@ -31,6 +35,7 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
     intervention: {
       technicienID: '',
       magasinID: '', // Added Magasin
+      // serviceID: '', // DEPRECATED
       dateDebut: new Date().toISOString().split('T')[0],
       panneReclamee: '',
       panneConstatee: '',
@@ -44,19 +49,44 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
   const [techniciens, setTechniciens] = useState([]);
   const [modeles, setModeles] = useState([]);
   const [magasins, setMagasins] = useState([]);
+  const [createItems, setCreateItems] = useState([]); // Local items for creation
   const [loading, setLoading] = useState(false);
+
+  // Custom fetch for pieces and details
+  const [currentDetails, setCurrentDetails] = useState(null);
+
+  const loadInterventionDetails = async () => {
+    if (initialData?.interventionID) {
+      try {
+        const data = await interventionService.getById(initialData.interventionID);
+        setCurrentDetails(data);
+      } catch (error) {
+        console.error("Error loading details:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && initialData) {
+      loadInterventionDetails();
+    } else {
+      setCurrentDetails(null);
+    }
+  }, [isOpen, initialData]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [techs, mods, mags] = await Promise.all([
+        const [techs, mods, mags, prods] = await Promise.all([
           technicienService.getAll(),
           modeleService.getAll(),
-          magasinService.getAll()
+          magasinService.getAll(),
+          produitService.getAll()
         ]);
         setTechniciens(techs);
         setModeles(mods);
         setMagasins(mags);
+        // setServices(prods.filter(p => p.typeArticle === 'Service'));
       } catch (err) {
         console.error("Error loading form data", err);
       }
@@ -93,7 +123,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
         intervention: {
           technicienID: initialData.technicienID || '',
           magasinID: initialData.magasinID || '',
+          serviceID: initialData.serviceID || '',
           dateDebut: initialData.dateDebut ? initialData.dateDebut.split('T')[0] : '',
+          dateFin: initialData.dateFin ? initialData.dateFin.split('T')[0] : '',
           panneReclamee: initialData.panneReclamee || '',
           panneConstatee: initialData.panneConstatee || '',
           travailEffectue: initialData.travailEffectue || '',
@@ -106,8 +138,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
       setFormData({
         client: { typeClient: 'particulier', nomContact: '', prenomContact: '', numTelephone: '', email: '', adresse: '', ville: '' },
         appareil: { modeleID: '', numeroSerie: '', dateAchat: '', finGarantie: '' },
-        intervention: { technicienID: '', magasinID: '', dateDebut: new Date().toISOString().split('T')[0], panneReclamee: '', panneConstatee: '', travailEffectue: '', statut: 'Planifiée', bonReparation: '', notes: '' }
+        intervention: { technicienID: '', magasinID: '', dateDebut: new Date().toISOString().split('T')[0], dateFin: '', panneReclamee: '', panneConstatee: '', travailEffectue: '', statut: 'Planifiée', bonReparation: '', notes: '' }
       });
+      setCreateItems([]); // Reset items
     }
   }, [initialData, isOpen]);
 
@@ -139,7 +172,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
         const interventionPayload = {
           technicienID: formData.intervention.technicienID || null,
           magasinID: formData.intervention.magasinID,
+          serviceID: formData.intervention.serviceID,
           dateDebut: formData.intervention.dateDebut,
+          dateFin: formData.intervention.dateFin,
           panneReclamee: formData.intervention.panneReclamee,
           panneConstatee: formData.intervention.panneConstatee,
           travailEffectue: formData.intervention.travailEffectue,
@@ -175,7 +210,9 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
           appareilID: appareilID,
           technicienID: formData.intervention.technicienID || null,
           magasinID: formData.intervention.magasinID,
+          serviceID: formData.intervention.serviceID,
           dateDebut: formData.intervention.dateDebut,
+          dateFin: formData.intervention.dateFin,
           panneReclamee: formData.intervention.panneReclamee,
           panneConstatee: formData.intervention.panneConstatee,
           travailEffectue: formData.intervention.travailEffectue,
@@ -217,6 +254,12 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                 <div><strong>Client:</strong> {initialData.nomClient}</div>
                 <div><strong>Appareil:</strong> {initialData.nomAppareil}</div>
               </div>
+
+              <InterventionPieces
+                interventionId={initialData.interventionID}
+                pieces={currentDetails?.pieces || []}
+                onUpdate={loadInterventionDetails}
+              />
             </div>
           )}
 
@@ -288,6 +331,8 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
             </>
           )}
 
+
+
           {/* Section Intervention */}
           <div className="form-section">
             <h3>{initialData ? 'Détails Intervention' : '3. Détails Intervention'}</h3>
@@ -310,52 +355,79 @@ const InterventionForm = ({ isOpen, onClose, onSubmit, initialData }) => {
                   ))}
                 </select>
               </div>
+              <label>Date Début</label>
+              <input type="date" name="dateDebut" value={formData.intervention.dateDebut} onChange={handleInterventionChange} className="form-input" required />
+            </div>
+            {formData.intervention.statut === 'Terminée' && (
               <div className="form-group">
-                <label>Date Début</label>
-                <input type="date" name="dateDebut" value={formData.intervention.dateDebut} onChange={handleInterventionChange} className="form-input" required />
+                <label>Date Fin</label>
+                <input type="date" name="dateFin" value={formData.intervention.dateFin || ''} onChange={handleInterventionChange} className="form-input" required />
               </div>
-              <div className="form-group">
-                <label>Bon de Réparation</label>
-                <input name="bonReparation" value={formData.intervention.bonReparation} onChange={handleInterventionChange} className="form-input" placeholder="N° Bon..." />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Notes d'Intervention</label>
-              <textarea name="notes" value={formData.intervention.notes} onChange={handleInterventionChange} className="form-input" rows="2" placeholder="Notes internes..." />
-            </div>
-            <div className="form-group">
-              <label>Panne Réclamée</label>
-              <textarea name="panneReclamee" value={formData.intervention.panneReclamee} onChange={handleInterventionChange} className="form-input" rows="2" required />
-            </div>
-            <div className="form-group">
-              <label>Panne Constatée</label>
-              <textarea name="panneConstatee" value={formData.intervention.panneConstatee} onChange={handleInterventionChange} className="form-input" rows="2" />
-            </div>
-            <div className="form-group">
-              <label>Travail Effectué</label>
-              <textarea name="travailEffectue" value={formData.intervention.travailEffectue} onChange={handleInterventionChange} className="form-input" rows="2" />
-            </div>
-            <div className="form-group">
-              <label>Statut</label>
-              <select name="statut" value={formData.intervention.statut} onChange={handleInterventionChange} className="form-input">
-                <option value="Planifiée">Planifiée</option>
-                <option value="En Cours">En Cours</option>
-                <option value="Terminée">Terminée</option>
-                <option value="Annulée">Annulée</option>
-                <option value="À Facturer">À Facturer</option>
-              </select>
-            </div>
+            )}
           </div>
 
+          {/* In Create Mode, allow adding pieces immediately */}
+          {!initialData && (
+            <InterventionPieces
+              mode="create"
+              pieces={createItems}
+              onChange={(newItem, removeId) => {
+                if (removeId) {
+                  setCreateItems(prev => prev.filter(p => p.id !== removeId));
+                } else if (newItem) {
+                  setCreateItems(prev => [...prev, newItem]);
+                }
+              }}
+            />
+          )}
+
+          <div className="form-group" style={{ marginTop: '1rem' }}>
+            <label>Notes & Panne</label>
+            <div className="form-group">
+              <label>Bon de Réparation</label>
+              <input name="bonReparation" value={formData.intervention.bonReparation} onChange={handleInterventionChange} className="form-input" placeholder="N° Bon..." />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Notes d'Intervention</label>
+            <textarea name="notes" value={formData.intervention.notes} onChange={handleInterventionChange} className="form-input" rows="2" placeholder="Notes internes..." />
+          </div>
+          <div className="form-group">
+            <label>Panne Réclamée</label>
+            <textarea name="panneReclamee" value={formData.intervention.panneReclamee} onChange={handleInterventionChange} className="form-input" rows="2" required />
+          </div>
+          <div className="form-group">
+            <label>Panne Constatée</label>
+            <textarea name="panneConstatee" value={formData.intervention.panneConstatee} onChange={handleInterventionChange} className="form-input" rows="2" />
+          </div>
+          <div className="form-group">
+            <label>Travail Effectué</label>
+            <textarea name="travailEffectue" value={formData.intervention.travailEffectue} onChange={handleInterventionChange} className="form-input" rows="2" />
+          </div>
+          <div className="form-group">
+            <label>Statut</label>
+            <select name="statut" value={formData.intervention.statut} onChange={handleInterventionChange} className="form-input">
+              <option value="Planifiée">Planifiée</option>
+              <option value="En Cours">En Cours</option>
+              <option value="Terminée">Terminée</option>
+              <option value="Annulée">Annulée</option>
+              <option value="À Facturer">À Facturer</option>
+            </select>
+          </div>
+
+
           <div className="form-actions">
+
+            {/* Facture generation hidden for multi-item refactor */}
+
             <button type="button" onClick={onClose} className="btn-cancel" disabled={loading}>Annuler</button>
             <button type="submit" className="btn-submit" disabled={loading}>
               {loading ? 'Enregistrement...' : (initialData ? 'Modifier' : 'Créer Tout')}
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

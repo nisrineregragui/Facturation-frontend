@@ -30,13 +30,25 @@ const removeBulk = async (ids) => {
     await Promise.all(promises);
 };
 
+const addPiece = async (id, data) => {
+    const response = await api.post(`/Intervention/${id}/pieces`, data);
+    return response.data;
+};
+
+const removePiece = async (id, ligneId) => {
+    const response = await api.delete(`/Intervention/${id}/pieces/${ligneId}`);
+    return response.data;
+};
+
 const interventionService = {
     getAll,
     getById,
     create,
     update,
     remove,
-    removeBulk
+    removeBulk,
+    addPiece,
+    removePiece
 };
 
 export default interventionService;
