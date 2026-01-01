@@ -114,7 +114,7 @@ const TechnicienTable = ({
                                 </td>
                                 <td>{tech.nom}</td>
                                 <td>{tech.prenom}</td>
-                                <td>{tech.cIN}</td>
+                                <td>{tech.cin}</td>
                                 <td>{tech.specialite}</td>
                             </tr>
                         ))

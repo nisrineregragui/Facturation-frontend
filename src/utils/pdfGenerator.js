@@ -11,7 +11,7 @@ export const generateInterventionPdf = (intervention, entreprise) => {
         doc.setTextColor(41, 75, 126); // #294b7e
         doc.setFont('helvetica', 'bold');
 
-        const entName = entreprise ? entreprise.nomCommercial : "ADANISSO ELECTRO";
+        const entName = entreprise ? entreprise.nomCommercial : "ELECTRO";
         doc.text(entName.toUpperCase(), 15, 20);
 
         doc.setFontSize(10);
